@@ -114,7 +114,13 @@ def printBooksbyTitle(books):
     """
     Completar la descripcion de printBooksbyTitle
     """
-    pass
+    if books:
+        print('El libro encontrado es: ')
+        for book in lt.iterator(books):
+            print('Titulo: ' + book['title'] + '  ISBN: ' + book['isbn'])
+    else:
+        print('No se encontró el libro buscado.\n')
+        
 
 # Menu de opciones
 
@@ -127,6 +133,7 @@ def printMenu():
     print("4- Consultar los libros de un autor")
     print("5- Consultar los Libros por etiqueta")
     # TODO lab 6, agregar la opcion nueva del menu
+    print("6- Consultar un libro por su título")
     print("0- Salir")
 
 
@@ -164,9 +171,10 @@ while True:
 
     elif int(inputs[0]) == 6:
         # TODO lab 6, conectar con las funciones del controlador e imprimir
-        # controller.getBooksByTitle(ctrlr, title)
-        # controller.titleSize(ctrlr)
-        pass
+        titulo = input("Titulo a buscar: ").title()
+        title = controller.getBooksByTitle(ctrlr, titulo)
+        #1size = controller.titlesSize(ctrlr)
+        printBooksbyTitle(title)
 
     elif int(inputs[0]) == 0:
         break
