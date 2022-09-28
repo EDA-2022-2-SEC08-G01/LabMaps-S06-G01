@@ -60,7 +60,7 @@ def newCatalog():
                'tags': None,
                'tagIds': None,
                'years': None,
-               'titles':None}
+               'titles': None}
 
     """
     Esta lista contiene todo los libros encontrados
@@ -121,10 +121,10 @@ def newCatalog():
     La columna 'titles' del archivo books.csv
     """
     # TODO lab 6, agregar el ADT map con newMap()
-    catalog['titles'] = mp.newMap(150,
-                                 maptype='PROBING',
-                                 loadfactor=0.5,
-                                 comparefunction=compareTitles)
+    catalog['titles'] = mp.newMap(160,
+                                  maptype="PROBING",
+                                  loadfactor=0.5,
+                                  comparefunction=compareTitles)
 
     return catalog
 
@@ -162,6 +162,10 @@ def newBookTag(name, id):
     tag['books'] = lt.newList()
     return tag
 
+def newTitle(title):
+    title = {"books": None}
+    title["books"] = lt.newList("ARRAY_LIST")
+    return title
 
 # Funciones para agregar informacion al catalogo
 
@@ -240,6 +244,25 @@ def addBookAuthor(catalog, authorname, book):
         author['average_rating'] = author['average'] / totbooks
 
 
+def addBookTitle(catalog, title):
+    # TODO lab 6, agregar el libro al map de titulos
+    """
+    Completar la descripcion de addBookTitle
+    """
+    titles = catalog["titles"]
+    tlt = title["title"]
+    existTitle = mp.contains(titles, tlt)
+    allBooks = None
+    if existTitle:
+        listBooks = mp.get(titles, tlt)
+        allBooks = mp.getValue(listBooks)
+        
+    else:
+        allBooks = newTitle(title)
+        mp.put(titles, tlt, allBooks)
+    
+    lt.addLast(allBooks["books"], title)
+
 def addTag(catalog, tag):
     """
     Adiciona un tag a la tabla de tags dentro del catalogo y se
@@ -269,21 +292,8 @@ def addBookTag(catalog, tag):
             lt.addLast(tagbook['value']['books'], book['value'])
 
 
-def addBookTitle(catalog, title):
-    # TODO lab 6, agregar el libro al map de titulos
-    """
-    Completar la descripcion de addBookTitle
-    """
-    titles = catalog['titles']
-    existtitle = mp.contains(titles, title)
-    if existtitle:
-        entry = mp.get(titles, titles)
-        title1 = me.getValue(entry)
-    else:
-        mp.put(catalog['titles'], title1, title)
 
-    
-    
+
 # ==============================
 # Funciones de consulta
 # ==============================
@@ -325,10 +335,11 @@ def getBookByTitle(catalog, title):
     """
     Completar la descripcion de getBookByTitle
     """
-    busq = mp.get(catalog['titles'], title)
-    if busq:
-        return me.getValue(busq)#['books']
-    return None
+    title = mp.get(catalog["titles"], title)
+    if title:
+        return me.getValue(title)["books"]
+    pass
+
 
 def booksSize(catalog):
     """
@@ -356,7 +367,7 @@ def titlesSize(catalog):
     """
     Completar la descripcion de titlesSize
     """
-    return mp.size(catalog['title'])
+    return mp.size(catalog['titles'])
 
 
 # ==============================
@@ -421,17 +432,17 @@ def compareTagIds(id, tag):
     elif (int(id) > int(tagentry)):
         return 1
     else:
-        return 0
+        return -1
 
 
-def compareMapYear(id, tag):
-    tagentry = me.getKey(tag)
-    if (id == tagentry):
+def compareMapYear(year, book):
+    bookentry = me.getKey(book)
+    if (year == bookentry):
         return 0
-    elif (id > tagentry):
+    elif (year > bookentry):
         return 1
     else:
-        return 0
+        return -1
 
 
 def compareYears(year1, year2):
@@ -440,18 +451,26 @@ def compareYears(year1, year2):
     elif (int(year1) > int(year2)):
         return 1
     else:
-        return 0
+        return -1
 
 
-def compareTitles(title1, title2):
+
+def compareTitles(title, book):
     # TODO lab 6, cmp para comparar dos titulos de libros para ADT Map
+    """ Completar la descripcion de compareTitles
+
+    Args:
+        title (str): titulo del libro
+        book (ADT mapentry): map entry con el libro
+
+    Returns:
+        int: retrona 0 si son iguales, 1 si el primero es mayor
+        y -1 si el primero es menor
     """
-    Completar la descripcion de compareTitles
-    """
-    titleentry = me.getKey(title2)
-    if title1 == titleentry:
+    titleentry = me.getKey(book)
+    if title == titleentry:
         return 0
-    elif title1 > titleentry:
+    elif title > titleentry:
         return 1
     else:
-        return 0
+        return -1
